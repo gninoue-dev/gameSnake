@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="glow-orb orb1"></div>
+<div class="glow-orb orb2"></div>
+ 
+<div class="wrapper">
+  <header>
+    <h1 class="logo">SN<span>A</span>KE</h1>
+    <div class="hud">
+      <div class="hud-block">
+        <span class="hud-label">SCORE</span>
+        <span class="hud-value" id="score">0</span>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-block">
+        <span class="hud-label">LEVEL</span>
+        <span class="hud-value" id="level">1</span>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-block">
+        <span class="hud-label">BEST</span>
+        <span class="hud-value" id="best">0</span>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-block">
+        <span class="hud-label">SON</span>
+        <button id="btnSound" class="sound-btn" title="Activer/Désactiver le son">🔊</button>
+      </div>
+    </div>
+  </header>
+ 
+  <div class="canvas-wrap">
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <canvas id="particleCanvas" width="400" height="400"></canvas>
+    <div id="overlay" class="overlay">
+      <div class="overlay-inner">
+        <p class="overlay-title" id="overlayTitle">SNAKE</p>
+        <p class="overlay-sub" id="overlaySub">Appuie sur <kbd>Espace</kbd> pour jouer</p>
+        <p class="overlay-score hidden" id="overlayScore"></p>
+        <button id="btnStart">▶ JOUER</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<script src="snake.js"></script>
+</body>
+</html>
