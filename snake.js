@@ -68,18 +68,14 @@ function soundEat() {
  
 function soundLevelUp() {
   if (!soundEnabled) return;
-  // Mémoriser la piste et la position en cours
   const trackIndex = currentTrack;
-  const trackTime = sndTracks[trackIndex].currentTime;
-  stopAllTracks();
   sndLevelUp.currentTime = 0;
   sndLevelUp.play().catch(() => {});
-  // Reprendre exactement là où on était
+  // Après le son levelup, démarrer la (nouvelle) piste depuis le début
   sndLevelUp.onended = () => {
     if (!isRunning || !soundEnabled) return;
-    sndTracks[trackIndex].currentTime = trackTime;
+    sndTracks[trackIndex].currentTime = 0;
     sndTracks[trackIndex].play().catch(() => {});
-    currentTrack = trackIndex;
   };
 }
  
@@ -272,6 +268,12 @@ function step() {
     if (score % 5 === 0) {
       level++;
       updateHUD(true);
+      // Changer de piste tous les 2 niveaux
+      if (level % 2 === 0) {
+        currentTrack = (currentTrack + 1) % sndTracks.length;
+        stopAllTracks();
+        sndTracks[currentTrack].currentTime = 0;
+      }
       soundLevelUp();
       clearInterval(gameLoop);
       speed = Math.max(50, speed - 12);
@@ -424,4 +426,3 @@ btnStart.addEventListener('click', startGame);
  
 // Initial draw
 drawGame();
- 
