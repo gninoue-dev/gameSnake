@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const pCanvas = document.getElementById("particleCanvas");
@@ -13,9 +14,27 @@ const overlayScore = document.getElementById("overlayScore");
 const btnStart = document.getElementById("btnStart");
 const canvasWrap = document.querySelector(".canvas-wrap");
  
-const BOX = 20;
-const COLS = canvas.width / BOX;
-const ROWS = canvas.height / BOX;
+// ─── RESPONSIVE CANVAS ───────────────────────────────────────
+const GRID = 20; // nombre de cases
+let BOX, COLS, ROWS;
+ 
+function resizeCanvas() {
+  // Taille max = 400px, sur mobile = 90% de la largeur de l'écran
+  const size = Math.min(400, Math.floor(window.innerWidth * 0.92 / GRID) * GRID);
+  BOX = size / GRID;
+  COLS = GRID;
+  ROWS = GRID;
+  canvas.width  = size;
+  canvas.height = size;
+  pCanvas.width  = size;
+  pCanvas.height = size;
+}
+ 
+resizeCanvas();
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  drawGame();
+});
  
 let snake, dir, nextDir, food, score, level, speed, gameLoop, best = 0;
 let isRunning = false;
