@@ -30,9 +30,9 @@ const btnSound = document.getElementById("btnSound");
 const sndGameOver = new Audio('sounds/gameover.mp3');
 const sndLevelUp  = new Audio('sounds/levelup.mp3');
 const sndTracks   = [
-  new Audio('sounds/snakesound1.mp3'),//snk opening 30 seconde
-  new Audio('sounds/snakesound2.mp3'),//Bleach ost espada 30 seconde
-  new Audio('sounds/snakesound3.mp3') //Opening mashle bling bang bang creepy nuts 30 seconde
+  new Audio('sounds/snakesound1.mp3'),
+  new Audio('sounds/snakesound2.mp3'),
+  new Audio('sounds/snakesound3.mp3')
 ];
  
 // Musique de fond : on enchaîne les 3 pistes en boucle
@@ -68,12 +68,18 @@ function soundEat() {
  
 function soundLevelUp() {
   if (!soundEnabled) return;
+  // Mémoriser la piste et la position en cours
+  const trackIndex = currentTrack;
+  const trackTime = sndTracks[trackIndex].currentTime;
   stopAllTracks();
   sndLevelUp.currentTime = 0;
   sndLevelUp.play().catch(() => {});
-  // Reprendre la musique après le son levelup
+  // Reprendre exactement là où on était
   sndLevelUp.onended = () => {
-    if (isRunning && soundEnabled) startMusic();
+    if (!isRunning || !soundEnabled) return;
+    sndTracks[trackIndex].currentTime = trackTime;
+    sndTracks[trackIndex].play().catch(() => {});
+    currentTrack = trackIndex;
   };
 }
  
@@ -418,3 +424,4 @@ btnStart.addEventListener('click', startGame);
  
 // Initial draw
 drawGame();
+ 
