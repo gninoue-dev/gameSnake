@@ -58,7 +58,8 @@ function startMusic() {
   if (!soundEnabled) return;
   stopAllTracks();
   currentTrack = 0;
-  sndTracks[0].play().catch(() => {});
+  const p = sndTracks[0].play();
+  if (p) p.catch(e => console.warn('Audio bloqué:', e));
 }
  
 function soundEat() {
@@ -369,8 +370,51 @@ document.addEventListener('keydown', e => {
   e.preventDefault();
 });
  
+// ─── D-PAD MOBILE ────────────────────────────────────────────
+function dpadPress(dx, dy) {
+  if (!isRunning) { startGame(); return; }
+  if (dx === -1 && dir.x !== 1)  nextDir = { x: -1, y: 0 };
+  if (dx ===  1 && dir.x !== -1) nextDir = { x: 1,  y: 0 };
+  if (dy === -1 && dir.y !== 1)  nextDir = { x: 0,  y: -1 };
+  if (dy ===  1 && dir.y !== -1) nextDir = { x: 0,  y: 1 };
+}
+ 
+document.getElementById('dUp').addEventListener('touchstart',    e => { e.preventDefault(); dpadPress(0, -1); }, { passive: false });
+document.getElementById('dDown').addEventListener('touchstart',  e => { e.preventDefault(); dpadPress(0,  1); }, { passive: false });
+document.getElementById('dLeft').addEventListener('touchstart',  e => { e.preventDefault(); dpadPress(-1, 0); }, { passive: false });
+document.getElementById('dRight').addEventListener('touchstart', e => { e.preventDefault(); dpadPress( 1, 0); }, { passive: false });
+document.getElementById('dCenter').addEventListener('touchstart',e => { e.preventDefault(); startGame(); },     { passive: false });
+ 
+// Fallback click pour desktop
+document.getElementById('dUp').addEventListener('click',    () => dpadPress(0, -1));
+document.getElementById('dDown').addEventListener('click',  () => dpadPress(0,  1));
+document.getElementById('dLeft').addEventListener('click',  () => dpadPress(-1, 0));
+document.getElementById('dRight').addEventListener('click', () => dpadPress( 1, 0));
+document.getElementById('dCenter').addEventListener('click',() => startGame());
+ 
+// ─── SWIPE MOBILE ────────────────────────────────────────────
+let touchStartX = 0, touchStartY = 0;
+canvas.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  e.preventDefault();
+}, { passive: false });
+ 
+canvas.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (!isRunning) { startGame(); return; }
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (dx > 20)       dpadPress(1, 0);
+    else if (dx < -20) dpadPress(-1, 0);
+  } else {
+    if (dy > 20)       dpadPress(0, 1);
+    else if (dy < -20) dpadPress(0, -1);
+  }
+  e.preventDefault();
+}, { passive: false });
+ 
 btnStart.addEventListener('click', startGame);
  
 // Initial draw
 drawGame();
- 
