@@ -435,7 +435,25 @@ function die() {
   $('stCombo').textContent  = 'x' + game.bestCombo;
   $('stBest').textContent   = bests[mode];
   $('newRecord').classList.toggle('hidden', !isRecord || game.score === 0);
-  setTimeout(() => { if (game.status === 'over') showScreen('over'); }, 750);
+  setTimeout(() => {
+    if (game.status !== 'over') return;
+    showScreen('over');
+    compterJusqua($('stScore'), game.score);
+  }, 750);
+}
+
+// Le score défile de 0 jusqu'à sa valeur, comme une borne d'arcade
+function compterJusqua(el, cible) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || cible <= 0) { el.textContent = cible; return; }
+  const debut = performance.now();
+  const etape = maintenant => {
+    const k = Math.min(1, (maintenant - debut) / 900);
+    el.textContent = Math.round(cible * (1 - Math.pow(1 - k, 3)));
+    if (k < 1 && game.status === 'over') requestAnimationFrame(etape);
+    else el.textContent = cible;
+  };
+  el.textContent = 0;
+  requestAnimationFrame(etape);
 }
 
 function formatTime(ms) {

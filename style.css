@@ -329,3 +329,51 @@ kbd {
 /* Focus clavier visible mais dans le thème */
 button:focus { outline: none; }
 button:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cyan), 0 0 24px rgba(0,245,255,0.35); }
+
+/* ── Animations des écrans ── */
+/* Le contenu de chaque écran arrive en cascade */
+.overlay-inner > * { animation: entreeEcran .45s cubic-bezier(.22,.9,.32,1) backwards; }
+.overlay-inner > :nth-child(2) { animation-delay: 0.06s; }
+.overlay-inner > :nth-child(3) { animation-delay: 0.12s; }
+.overlay-inner > :nth-child(4) { animation-delay: 0.18s; }
+.overlay-inner > :nth-child(5) { animation-delay: 0.24s; }
+.overlay-inner > :nth-child(6) { animation-delay: 0.30s; }
+.overlay-inner > :nth-child(7) { animation-delay: 0.36s; }
+.overlay-inner > :nth-child(8) { animation-delay: 0.42s; }
+@keyframes entreeEcran { from { opacity: 0; transform: translateY(14px); } }
+
+/* GAME OVER : le titre s'écrase sur l'écran */
+.overlay-title.over { animation: titreFin .6s cubic-bezier(.2,1.4,.4,1) backwards; }
+@keyframes titreFin {
+  0%   { opacity: 0; transform: scale(1.9); letter-spacing: 22px; filter: blur(8px); }
+  60%  { opacity: 1; filter: blur(0); }
+}
+
+/* Les statistiques se retournent une par une */
+.stats > div { animation: statEntree .4s cubic-bezier(.22,.9,.32,1) backwards; }
+.stats > :nth-child(1) { animation-delay: 0.25s; }
+.stats > :nth-child(2) { animation-delay: 0.30s; }
+.stats > :nth-child(3) { animation-delay: 0.35s; }
+.stats > :nth-child(4) { animation-delay: 0.40s; }
+.stats > :nth-child(5) { animation-delay: 0.45s; }
+.stats > :nth-child(6) { animation-delay: 0.50s; }
+@keyframes statEntree { from { opacity: 0; transform: translateX(-12px); } }
+
+/* Nouveau record : pulsation lumineuse */
+.record:not(.hidden) { animation: entreeEcran .45s .1s backwards, recordPulse 1.2s .6s ease-in-out infinite alternate; }
+@keyframes recordPulse { to { text-shadow: 0 0 18px currentColor, 0 0 36px currentColor; transform: scale(1.06); } }
+
+/* Boutons principaux : reflet qui traverse au survol */
+.main-btn { position: relative; overflow: hidden; }
+.main-btn::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent);
+  transform: skewX(-20deg); transition: left .5s ease;
+}
+.main-btn:hover::after { left: 120%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay, .overlay-inner > *, .overlay-title.over, .stats > div, .record:not(.hidden) { animation: none !important; }
+  .main-btn::after { display: none; }
+}
+
